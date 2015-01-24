@@ -6,7 +6,14 @@ package com.mlesniak.sonar.report;
  * @author Michael Lesniak (mail@mlesniak.com)
  */
 public class Main {
+    private Configuration config;
+
     public static void main(String[] args) {
-        System.out.println("Hello world");
+        new Main().run(args);
+    }
+
+    private void run(String[] args) {
+        config = ConfigurationTool.parse(Configuration.class, args);
+        System.out.println(config);
     }
 }
