@@ -13,13 +13,14 @@ import java.util.Properties;
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
 public class ConfigurationTool {
-
     public static <T> T parse(Class<T> bean, String[] args) {
         try {
             T instance = bean.newInstance();
             Properties props = loadProperties();
             Map<String, String> argMap = parseArgs(args);
-            return parseToInstance(instance, props, argMap);
+            T config = parseToInstance(instance, props, argMap);
+            BeanUtils.setField(config, "INSTANCE", config);
+            return config;
         } catch (Exception e) {
             System.err.println("TODO Logging");
             System.exit(1);
