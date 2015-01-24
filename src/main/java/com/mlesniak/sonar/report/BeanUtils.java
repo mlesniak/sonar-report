@@ -39,13 +39,13 @@ public class BeanUtils {
         final StringBuilder sb = new StringBuilder();
 
         BeanUtils.forEachField(instance, field -> {
-            sb.append(field.getName());
-            sb.append("=");
             try {
                 if (field.get(instance) == instance) {
                     // Prevent recursion (simple enough for this)
                     return;
                 }
+                sb.append(field.getName());
+                sb.append("=");
                 sb.append(field.get(instance).toString());
             } catch (IllegalAccessException e) {
                 System.out.println("TODO Logging");
