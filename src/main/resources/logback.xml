@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--Detailed logging for file.-->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <append>true</append>
+        <file>sonar-report.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}\t%t\t%-5p\t%C\t%m\t%replace(%replace(%ex{full}){"\n", ";"}){"\t",""}%nopex%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--Readable logging for console.-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5p %d{yyyy-MM-dd HH:mm:ss.SSS} - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.mlesniak" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!--<logger name="org.apache.commons.configuration" level="WARN" additivity="false">-->
+        <!--<appender-ref ref="CONSOLE"/>-->
+        <!--<appender-ref ref="FILE"/>-->
+    <!--</logger>-->
+
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
