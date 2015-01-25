@@ -1,5 +1,6 @@
 package com.mlesniak.sonar.report;
 
+import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class ConfigurationTool {
             T config = parseToInstance(instance, props, argMap);
             addNonFields(instance, props, argMap);
             BeanUtils.setField(config, "INSTANCE", config);
+            handleLogLevel(config);
             return config;
         } catch (Exception e) {
             LOG.error("Error while generating configuration: {}", e.getMessage());
@@ -33,6 +35,15 @@ public class ConfigurationTool {
 
         // Never reached.
         return null;
+    }
+
+    private static <T extends Configuration> void handleLogLevel(T config) {
+        if (config.get("logLevel") != null) {
+            // Think about a good generalization for com.mlesniak.
+            ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.mlesniak");
+            Level logLevel = Level.toLevel(config.get("logLevel"));
+            root.setLevel(logLevel);
+        }
     }
 
     /**

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.List;
 
+
 /**
  * Main entry point.
  *
@@ -21,8 +22,8 @@ public class Main {
     }
 
     private void run(String[] args) throws Exception {
-        LOG.info("Starting sonar reporting.");
         config = ConfigurationTool.parse(Configuration.class, args);
+        LOG.info("Starting sonar reporting.");
         if (LOG.isDebugEnabled()) {
             LOG.debug("Configuration:\n{}", config.toString());
         }
