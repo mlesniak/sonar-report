@@ -55,7 +55,8 @@ public class BeanUtils {
                 }
                 sb.append(field.getName());
                 sb.append("=");
-                sb.append(field.get(instance).toString());
+                Object o = field.get(instance);
+                sb.append(o == null ? "null" : o.toString());
             } catch (IllegalAccessException e) {
                 System.out.println("TODO Logging");
             }
