@@ -1,0 +1,14 @@
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--This is just a test template.-->
+<h1>Sonar report summary</h1>
+<ul>
+       <li th:each="issue : ${issues}">
+              <span th:text="${issue.severity}"></span>
+              <span th:text="${issue.getStatus()}"></span>
+              <span th:text="${issue.component}"></span>
+       </li>
+</ul>
+</body>
+</html>

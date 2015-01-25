@@ -15,6 +15,7 @@ public class Configuration {
     private String user;
     private String password;
     private String server;
+    private String reportFile;
 
     public String getServer() {
         return server;
@@ -30,6 +31,10 @@ public class Configuration {
 
     public void add(String key, String value) {
         nonFields.put(key, value);
+    }
+
+    public String getReportFile() {
+        return reportFile;
     }
 
     public String get(String field) {

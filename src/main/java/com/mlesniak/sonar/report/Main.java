@@ -1,7 +1,8 @@
 package com.mlesniak.sonar.report;
 
-import com.google.gson.Gson;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -25,10 +26,9 @@ public class Main {
         SonarConnection sonar = new SonarConnection();
         sonar.login();
         List<SonarConnection.Issue> issues = sonar.getIssues();
-        Gson gson = new Gson();
-        for (SonarConnection.Issue issue : issues) {
-            System.out.println(gson.toJson(issue));
-        }
+        TemplateOutput templateOutput = new TemplateOutput();
+        String result = templateOutput.processIssues(issues);
+        FileUtils.writeStringToFile(new File(config.getReportFile()), result);
     }
 
 
