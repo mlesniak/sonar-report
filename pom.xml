@@ -28,6 +28,23 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.mlesniak.maven</groupId>
+                <artifactId>execute-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <configuration>
+                    <path>/usr/local/bin</path>
+                    <jarName>sonar-report.jar</jarName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
