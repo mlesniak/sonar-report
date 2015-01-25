@@ -1,5 +1,8 @@
 package com.mlesniak.sonar.report;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,6 +15,8 @@ import java.util.*;
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
 public class ConfigurationTool {
+    private static Logger LOG = LoggerFactory.getLogger(ConfigurationTool.class);
+
     public static <T extends Configuration> T parse(Class<T> bean, String[] args) {
         try {
             T instance = bean.newInstance();
@@ -22,7 +27,7 @@ public class ConfigurationTool {
             BeanUtils.setField(config, "INSTANCE", config);
             return config;
         } catch (Exception e) {
-            System.err.println("TODO Logging");
+            LOG.error("Error while generating configuration: {}", e.getMessage());
             System.exit(1);
         }
 
@@ -105,7 +110,7 @@ public class ConfigurationTool {
                     field.set(instance, value);
                 }
             } catch (IllegalAccessException e) {
-                System.out.println("TODO Logging");
+                LOG.error("Internal error while accessing field: {}, error:{}", field.getName(), e.getMessage());
             }
         });
 

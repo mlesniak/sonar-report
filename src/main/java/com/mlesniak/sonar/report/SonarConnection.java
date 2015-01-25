@@ -11,6 +11,8 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -23,10 +25,12 @@ import java.util.List;
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
 public class SonarConnection {
-    public static String GET_ISSUE_SEARCH = "/api/issues/search";
-    public static String GET_AUTHORIZE_VALIDATE = "/api/authentication/validate";
-
+    private static Logger LOG = LoggerFactory.getLogger(SonarConnection.class);
+    private static String GET_ISSUE_SEARCH = "/api/issues/search";
+    private static String GET_AUTHORIZE_VALIDATE = "/api/authentication/validate";
+    private Configuration config;
     private Gson gson = new Gson();
+    private final CloseableHttpClient httpclient;
 
     private class Auth {
         private boolean valid;
@@ -114,40 +118,37 @@ public class SonarConnection {
         }
     }
 
+    public SonarConnection() {
+        httpclient = HttpClients.createDefault();
+        config = Configuration.get();
+    }
+
     public void login() {
-        try {
-            String sonarResponse = getSonarResponse(GET_AUTHORIZE_VALIDATE);
-            Auth authJSON = gson.fromJson(sonarResponse, Auth.class);
-            if (!authJSON.isValid()) {
-                System.out.println("Logging: error, not valid!");
-            }
-        } catch (IOException | AuthenticationException e) {
-            e.printStackTrace();
+        LOG.debug("Authenticating at sonar server.");
+        String sonarResponse = getSonarResponse(GET_AUTHORIZE_VALIDATE);
+        Auth authJSON = gson.fromJson(sonarResponse, Auth.class);
+        if (!authJSON.isValid()) {
+            LOG.error("Unable to log into server. Aborting");
+            System.exit(1);
         }
     }
 
     /**
      * Filter for property names defined in the configuration.
-     *
-     * @return
      */
     public List<Issue> getIssues() {
-        try {
-            String sonarResponse = getSonarResponse(GET_ISSUE_SEARCH);
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(sonarResponse);
-            JsonArray issueArray = ((JsonObject) element).get("issues").getAsJsonArray();
-            List<Issue> issues = new LinkedList<>();
-            for (JsonElement issue : issueArray) {
-                Issue issueInstance = gson.fromJson(issue, Issue.class);
-                issues.add(issueInstance);
-            }
-            filterIssues(issues);
-            return issues;
-        } catch (IOException | AuthenticationException e) {
-            e.printStackTrace();
+        LOG.debug("Retriving issues from server");
+        String sonarResponse = getSonarResponse(GET_ISSUE_SEARCH);
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(sonarResponse);
+        JsonArray issueArray = ((JsonObject) element).get("issues").getAsJsonArray();
+        List<Issue> issues = new LinkedList<>();
+        for (JsonElement issue : issueArray) {
+            Issue issueInstance = gson.fromJson(issue, Issue.class);
+            issues.add(issueInstance);
         }
-        return null;
+        filterIssues(issues);
+        return issues;
     }
 
     private void filterIssues(List<Issue> issues) {
@@ -176,17 +177,20 @@ public class SonarConnection {
         }
     }
 
-    private String getSonarResponse(String suffix) throws IOException, AuthenticationException {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(Configuration.get().getServer() + suffix);
-        Header header = new BasicScheme().authenticate(getHttpClient(), httpGet, new HttpClientContext());
-        httpGet.addHeader(header);
-        System.out.println(httpGet.toString());
-        CloseableHttpResponse response = httpclient.execute(httpGet);
-        return EntityUtils.toString(response.getEntity());
+    private String getSonarResponse(String suffix) {
+        try {
+            HttpGet httpGet = new HttpGet(Configuration.get().getServer() + suffix);
+            UsernamePasswordCredentials creds = new UsernamePasswordCredentials(config.getUser(), config.getPassword());
+            Header header = new BasicScheme().authenticate(creds, httpGet, new HttpClientContext());
+            httpGet.addHeader(header);
+            LOG.debug("Sonar communuication: {}", httpGet.toString());
+            CloseableHttpResponse response = httpclient.execute(httpGet);
+            return EntityUtils.toString(response.getEntity());
+        } catch (IOException | AuthenticationException e) {
+            LOG.error("Error in sonar communication: {}.", e.getMessage());
+            System.exit(1);
+            return null;
+        }
     }
 
-    private UsernamePasswordCredentials getHttpClient() {
-        return new UsernamePasswordCredentials(Configuration.get().getUser(), Configuration.get().getPassword());
-    }
 }

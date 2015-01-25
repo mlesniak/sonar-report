@@ -1,6 +1,8 @@
 package com.mlesniak.sonar.report;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
  * @author Michael Lesniak (mail@mlesniak.com)
  */
 public class Main {
+    private static Logger LOG = LoggerFactory.getLogger(Main.class);
     private Configuration config;
 
     public static void main(String[] args) throws Exception {
@@ -18,10 +21,11 @@ public class Main {
     }
 
     private void run(String[] args) throws Exception {
+        LOG.info("Starting sonar reporting.");
         config = ConfigurationTool.parse(Configuration.class, args);
-        // TODO ML Logging
-        System.out.println("Configuration:");
-        System.out.println(config);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Configuration:\n{}", config.toString());
+        }
 
         SonarConnection sonar = new SonarConnection();
         sonar.login();
@@ -29,6 +33,7 @@ public class Main {
         TemplateOutput templateOutput = new TemplateOutput();
         String result = templateOutput.processIssues(issues);
         FileUtils.writeStringToFile(new File(config.getReportFile()), result);
+        LOG.info("Wrote report to {}", config.getReportFile());
     }
 
 

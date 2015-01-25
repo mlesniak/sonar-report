@@ -1,5 +1,8 @@
 package com.mlesniak.sonar.report;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -9,6 +12,8 @@ import java.lang.reflect.Modifier;
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
 public class BeanUtils {
+    private static Logger LOG = LoggerFactory.getLogger(BeanUtils.class);
+
     public static void forEachField(Object instance, BeanUtilsFieldFunction func) {
         for (Field field : instance.getClass().getDeclaredFields()) {
             boolean accStatus = field.isAccessible();
@@ -58,10 +63,13 @@ public class BeanUtils {
                 Object o = field.get(instance);
                 sb.append(o == null ? "null" : o.toString());
             } catch (IllegalAccessException e) {
-                System.out.println("TODO Logging");
+                LOG.error("Error whil accessing field {}, error:{}", field.getName(), e.getMessage());
             }
             sb.append("\n");
         });
+
+        // Remove last \n.
+        sb.deleteCharAt(sb.length() - 1);
 
         return sb.toString();
     }
