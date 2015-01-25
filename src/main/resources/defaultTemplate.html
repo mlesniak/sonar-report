@@ -3,12 +3,24 @@
 <body>
 <!--This is just a test template.-->
 <h1>Sonar report summary</h1>
-<ul>
-       <li th:each="issue : ${issues}">
-              <span th:text="${issue.severity}"></span>
-              <span th:text="${issue.getStatus()}"></span>
-              <span th:text="${issue.component}"></span>
-       </li>
-</ul>
+<table border="1px">
+       <tr th:each="issue : ${issues}">
+              <td th:text="${issue.key}"></td>
+              <td th:text="${issue.component}"></td>
+              <td th:text="${issue.componentId}"></td>
+              <td th:text="${issue.project}"></td>
+              <td th:text="${issue.rule}"></td>
+              <td th:text="${issue.status}"></td>
+              <td th:text="${issue.resolution}"></td>
+              <td th:text="${issue.severity}"></td>
+              <td th:text="${issue.message}"></td>
+              <td th:text="${issue.line}"></td>
+              <td th:text="${issue.debt}"></td>
+              <td th:text="${issue.creationDate}"></td>
+              <td th:text="${issue.updateDate}"></td>
+              <td th:text="${issue.fUpdateAge}"></td>
+              <td th:text="${issue.closeDate}"></td>
+       </tr>
+</table>
 </body>
 </html>
