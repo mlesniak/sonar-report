@@ -15,7 +15,7 @@ public class ConfigurationTool {
     public static <T extends Configuration> T parse(Class<T> bean, String[] args) {
         try {
             T instance = bean.newInstance();
-            Properties props = loadProperties();
+            Properties props = loadProperties(args);
             Map<String, String> argMap = parseArgs(args);
             T config = parseToInstance(instance, props, argMap);
             addNonFields(instance, props, argMap);
@@ -57,7 +57,13 @@ public class ConfigurationTool {
     private static Map<String, String> parseArgs(String[] args) {
         Map<String, String> argMap = new HashMap<>();
 
-        for (int i = 0; i < args.length; i += 2) {
+        // Is an additional argument given? Then it's probably a file name.
+        int startAt = 0;
+        if (args.length % 2 == 1) {
+            startAt = 1;
+        }
+
+        for (int i = startAt; i < args.length; i += 2) {
             String key = args[i].substring(1, args[i].length());
             argMap.put(key, args[i + 1]);
         }
@@ -65,10 +71,15 @@ public class ConfigurationTool {
         return argMap;
     }
 
-    private static Properties loadProperties() throws IOException {
+    private static Properties loadProperties(String[] args) throws IOException {
         Properties props = new Properties();
 
-        File file = new File("application.properties");
+        String filename = "application.properties";
+        if (args.length % 2 == 1) {
+            filename = args[0];
+        }
+
+        File file = new File(filename);
         if (!file.exists()) {
             return props;
         }
