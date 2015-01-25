@@ -18,10 +18,10 @@ import java.util.*;
 public class ConfigurationTool {
     private static Logger LOG = LoggerFactory.getLogger(ConfigurationTool.class);
 
-    public static <T extends Configuration> T parse(Class<T> bean, String[] args) {
+    public static <T extends Configuration> T parse(Class<T> bean, String filename, String[] args) {
         try {
             T instance = bean.newInstance();
-            Properties props = loadProperties(args);
+            Properties props = loadProperties(filename, args);
             Map<String, String> argMap = parseArgs(args);
             T config = parseToInstance(instance, props, argMap);
             addNonFields(instance, props, argMap);
@@ -87,10 +87,10 @@ public class ConfigurationTool {
         return argMap;
     }
 
-    private static Properties loadProperties(String[] args) throws IOException {
+    private static Properties loadProperties(String defaultFilename, String[] args) throws IOException {
         Properties props = new Properties();
 
-        String filename = "application.properties";
+        String filename = defaultFilename;
         if (args.length % 2 == 1) {
             filename = args[0];
         }
