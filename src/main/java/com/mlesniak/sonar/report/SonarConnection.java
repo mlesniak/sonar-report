@@ -13,6 +13,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -125,6 +126,11 @@ public class SonarConnection {
         }
     }
 
+    /**
+     * Filter for property names defined in the configuration.
+     *
+     * @return
+     */
     public List<Issue> getIssues() {
         try {
             String sonarResponse = getSonarResponse(GET_ISSUE_SEARCH);
@@ -136,11 +142,38 @@ public class SonarConnection {
                 Issue issueInstance = gson.fromJson(issue, Issue.class);
                 issues.add(issueInstance);
             }
+            filterIssues(issues);
             return issues;
         } catch (IOException | AuthenticationException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void filterIssues(List<Issue> issues) {
+        class Wrapper {
+            public boolean value = false;
+        }
+
+        Iterator<Issue> it = issues.iterator();
+        while (it.hasNext()) {
+            Issue issue = it.next();
+            Wrapper removeIt = new Wrapper();
+            // Remember if the current item should be removed:
+            BeanUtils.forEachField(issue, field -> {
+                String filterValue = Configuration.get().get(field.getName());
+                if (filterValue == null) {
+                    return;
+                }
+
+                if (!field.get(issue).equals(filterValue)) {
+                    removeIt.value = true;
+                }
+            });
+            if (removeIt.value) {
+                it.remove();
+            }
+        }
     }
 
     private String getSonarResponse(String suffix) throws IOException, AuthenticationException {

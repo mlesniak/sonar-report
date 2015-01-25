@@ -11,5 +11,5 @@ import java.lang.reflect.Field;
  */
 @FunctionalInterface
 public interface BeanUtilsFieldFunction {
-    void handleField(Field field);
+    void handleField(Field field) throws IllegalAccessException;
 }

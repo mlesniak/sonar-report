@@ -1,12 +1,16 @@
 package com.mlesniak.sonar.report;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Configuration bean.
  *
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
 public class Configuration {
-    private static Configuration INSTANCE;
+    private transient static Configuration INSTANCE;
+    private transient Map<String, String> nonFields = new HashMap<>();
 
     private String user;
     private String password;
@@ -22,6 +26,14 @@ public class Configuration {
 
     public String getPassword() {
         return password;
+    }
+
+    public void add(String key, String value) {
+        nonFields.put(key, value);
+    }
+
+    public String get(String field) {
+        return nonFields.get(field);
     }
 
     public static Configuration get() {

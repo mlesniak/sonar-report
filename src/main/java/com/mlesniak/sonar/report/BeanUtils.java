@@ -1,6 +1,7 @@
 package com.mlesniak.sonar.report;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * Utility functions to work with java beans.
@@ -12,7 +13,11 @@ public class BeanUtils {
         for (Field field : instance.getClass().getDeclaredFields()) {
             boolean accStatus = field.isAccessible();
             field.setAccessible(true);
-            func.handleField(field);
+            try {
+                func.handleField(field);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
             field.setAccessible(accStatus);
         }
     }
@@ -40,6 +45,10 @@ public class BeanUtils {
 
         BeanUtils.forEachField(instance, field -> {
             try {
+                if (Modifier.isTransient(field.getModifiers())) {
+                    // Ignore internal fields.
+                    return;
+                }
                 if (field.get(instance) == instance) {
                     // Prevent recursion (simple enough for this)
                     return;

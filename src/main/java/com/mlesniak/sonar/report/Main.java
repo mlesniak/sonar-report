@@ -1,5 +1,7 @@
 package com.mlesniak.sonar.report;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 /**
@@ -23,8 +25,9 @@ public class Main {
         SonarConnection sonar = new SonarConnection();
         sonar.login();
         List<SonarConnection.Issue> issues = sonar.getIssues();
+        Gson gson = new Gson();
         for (SonarConnection.Issue issue : issues) {
-            System.out.println(issue.getComponent() + "\t" + issue.getRule() + "\t" + issue.getMessage());
+            System.out.println(gson.toJson(issue));
         }
     }
 

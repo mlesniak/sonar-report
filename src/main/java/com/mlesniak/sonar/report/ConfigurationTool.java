@@ -3,9 +3,8 @@ package com.mlesniak.sonar.report;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Configuration bean.
@@ -13,12 +12,13 @@ import java.util.Properties;
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
 public class ConfigurationTool {
-    public static <T> T parse(Class<T> bean, String[] args) {
+    public static <T extends Configuration> T parse(Class<T> bean, String[] args) {
         try {
             T instance = bean.newInstance();
             Properties props = loadProperties();
             Map<String, String> argMap = parseArgs(args);
             T config = parseToInstance(instance, props, argMap);
+            addNonFields(instance, props, argMap);
             BeanUtils.setField(config, "INSTANCE", config);
             return config;
         } catch (Exception e) {
@@ -28,6 +28,30 @@ public class ConfigurationTool {
 
         // Never reached.
         return null;
+    }
+
+    /**
+     * Add property and command line fields which are not set as fields.
+     */
+    private static <T extends Configuration> void addNonFields(T instance, Properties props, Map<String, String> argMap) {
+        Set<String> fieldNames = new HashSet<String>();
+        for (Field field : instance.getClass().getDeclaredFields()) {
+            fieldNames.add(field.getName());
+        }
+
+        // Handle additional key values from property files.
+        for (Object key : props.keySet()) {
+            if (!fieldNames.contains(key.toString())) {
+                instance.add(key.toString(), props.get(key).toString());
+            }
+        }
+
+        // Handle additional key values from command line (overwrite property files).
+        for (Map.Entry<String, String> entry : argMap.entrySet()) {
+            if (!fieldNames.contains(entry.getKey())) {
+                instance.add(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     private static Map<String, String> parseArgs(String[] args) {
@@ -66,7 +90,9 @@ public class ConfigurationTool {
 
             // Write value.
             try {
-                field.set(instance, value);
+                if (value != null) {
+                    field.set(instance, value);
+                }
             } catch (IllegalAccessException e) {
                 System.out.println("TODO Logging");
             }
