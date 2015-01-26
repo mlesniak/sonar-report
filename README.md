@@ -39,6 +39,7 @@ By setting the option ```logLevel``` to ```WARN```, you can prevent the printing
 The default username and passwort is defined in sonar-report.properties. If you simply call ```sonar-report```, these
 values will be used. To specify different values, you execute ```sonar-report -user foo -password bla```.
 
+# TODO
 
-
+* Set pageSize to -1 to retrieve all issues.
 
