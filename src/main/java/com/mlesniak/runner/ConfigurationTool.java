@@ -1,6 +1,9 @@
 package com.mlesniak.runner;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import com.mlesniak.sonar.report.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -21,6 +25,7 @@ public class ConfigurationTool {
 
     public static <T extends Configuration> T parse(Class<T> bean, String filename, String[] args) {
         try {
+            initializeLogging(filename);
             T instance = bean.newInstance();
             Properties props = loadProperties(filename, args);
             Map<String, String> argMap = parseArgs(args);
@@ -39,6 +44,17 @@ public class ConfigurationTool {
 
         // Never reached.
         return null;
+    }
+
+    private static void initializeLogging(String appName) throws JoranException {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(context);
+        // Override default configuration.
+        context.reset();
+        context.putProperty("application-name", appName);
+        InputStream stream = ConfigurationTool.class.getClassLoader().getResourceAsStream("logback.xml");
+        jc.doConfigure(stream);
     }
 
     private static <T extends Configuration> void handleLogLevel(T config) {

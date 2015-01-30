@@ -15,15 +15,19 @@ import java.util.List;
  * @author Michael Lesniak (mail@mlesniak.com)
  */
 public class Main {
-    private static Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static Logger LOG = LoggerFactory.getLogger(Main.class);;
 
     public static void main(String[] args) throws Exception {
         new Main().run(args);
     }
 
     private void run(String[] args) throws Exception {
+        // TODO ML Get this over annotations of Main.
         Configuration config = ConfigurationTool.parse(Configuration.class, "sonar-report", args);
+
+        // Testing.
         LOG.info("Starting sonar reporting.");
+        System.exit(1);
 
         SonarConnection sonar = new SonarConnection();
         sonar.login();
