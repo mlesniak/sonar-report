@@ -7,11 +7,12 @@ regards to configurability and speed of execution.
 
 # Installation
 
-Download and install [execute-maven-plugin](https://github.com/mlesniak/execute-maven-plugin) by calling
+Download and install [execute-maven-plugin](https://github.com/mlesniak/execute-maven-plugin) as well as
+[runner](https://github.com/mlesniak/runner) by calling
 
     mvn install
 
-Afterwards, execute for the files in the current repository
+for each project. Afterwards, execute for the files in the current repository
 
     mvn package
 
