@@ -1,7 +1,6 @@
 package com.mlesniak.sonar.report;
 
 import com.mlesniak.runner.BaseRunner;
-import com.mlesniak.runner.ConfigurationTool;
 import com.mlesniak.runner.Runner;
 import org.apache.commons.io.FileUtils;
 
@@ -20,9 +19,10 @@ public class Main extends BaseRunner {
         new Main().run(args);
     }
 
-    private void run(String[] args) throws Exception {
-        SonarReportConfiguration config = (SonarReportConfiguration) ConfigurationTool.parse(args);
+    public void run(String[] args) throws Exception {
+        initRunner(args);
 
+        SonarReportConfiguration config = SonarReportConfiguration.get();
         info("Starting sonar reporting.");
         SonarConnection sonar = new SonarConnection();
         sonar.login();

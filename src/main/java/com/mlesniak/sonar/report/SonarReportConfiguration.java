@@ -29,4 +29,9 @@ public class SonarReportConfiguration extends RunnerConfiguration {
         return reportFile;
     }
 
+    // Is there a nicer way?
+    public static SonarReportConfiguration get() {
+        return (SonarReportConfiguration) RunnerConfiguration.get();
+    }
+
 }
