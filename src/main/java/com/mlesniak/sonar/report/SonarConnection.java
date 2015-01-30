@@ -1,6 +1,7 @@
 package com.mlesniak.sonar.report;
 
 import com.google.gson.*;
+import com.mlesniak.runner.BeanUtils;
 import org.apache.http.Header;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;

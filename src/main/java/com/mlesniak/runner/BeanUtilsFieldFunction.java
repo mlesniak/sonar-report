@@ -1,4 +1,4 @@
-package com.mlesniak.sonar.report;
+package com.mlesniak.runner;
 
 import java.lang.reflect.Field;
 

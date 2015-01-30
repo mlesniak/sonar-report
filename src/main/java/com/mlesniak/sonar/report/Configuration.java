@@ -1,5 +1,7 @@
 package com.mlesniak.sonar.report;
 
+import com.mlesniak.runner.BeanUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
