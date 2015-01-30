@@ -1,7 +1,6 @@
 package com.mlesniak.sonar.report;
 
 import com.mlesniak.runner.BaseRunner;
-import com.mlesniak.runner.Runner;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -13,14 +12,13 @@ import java.util.List;
  *
  * @author Michael Lesniak (mail@mlesniak.com)
  */
-@Runner(configClass = SonarReportConfiguration.class, appName = "sonar-report")
 public class Main extends BaseRunner {
     public static void main(String[] args) throws Exception {
         new Main().run(args);
     }
 
     public void run(String[] args) throws Exception {
-        initRunner(args);
+        initRunner(SonarReportConfiguration.class, "sonar-report", args);
 
         SonarReportConfiguration config = SonarReportConfiguration.get();
         info("Starting sonar reporting.");
