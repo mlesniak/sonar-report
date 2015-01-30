@@ -22,14 +22,17 @@ import java.util.*;
  */
 public class ConfigurationTool {
     private static Logger LOG = LoggerFactory.getLogger(ConfigurationTool.class);
+    private static String appName;
+    private static Class<Configuration> bean;
 
-    public static <T extends Configuration> T parse(Class<T> bean, String filename, String[] args) {
+    public static Configuration parse(String[] args) {
         try {
-            initializeLogging(filename);
-            T instance = bean.newInstance();
-            Properties props = loadProperties(filename, args);
+            initializeInstanceVariablesFromAnnotations();
+            initializeLogging(appName);
+            Configuration  instance = bean.newInstance();
+            Properties props = loadProperties(appName, args);
             Map<String, String> argMap = parseArgs(args);
-            T config = parseToInstance(instance, props, argMap);
+            Configuration  config = parseToInstance(instance, props, argMap);
             addNonFields(instance, props, argMap);
             BeanUtils.setField(config, "INSTANCE", config);
             handleLogLevel(config);
@@ -44,6 +47,23 @@ public class ConfigurationTool {
 
         // Never reached.
         return null;
+    }
+
+    private static void initializeInstanceVariablesFromAnnotations() throws ClassNotFoundException {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        for (int i = 0; i < stackTrace.length; i++) {
+            if (stackTrace[i].getClassName().equals("com.mlesniak.runner.ConfigurationTool")) {
+                String annotatedClass = stackTrace[i + 2].getClassName();
+                Class<?> annClass = ConfigurationTool.class.getClassLoader().loadClass(annotatedClass);
+                Runner annotation = annClass.getAnnotation(Runner.class);
+                if (annotation == null) {
+                    throw new IllegalArgumentException("Main class not annotated with Runner.");
+                }
+                bean = annotation.configClass();
+                appName = annotation.appName();
+                return;
+            }
+        }
     }
 
     private static void initializeLogging(String appName) throws JoranException {

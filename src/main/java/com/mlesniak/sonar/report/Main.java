@@ -1,6 +1,7 @@
 package com.mlesniak.sonar.report;
 
 import com.mlesniak.runner.ConfigurationTool;
+import com.mlesniak.runner.Runner;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.List;
  *
  * @author Michael Lesniak (mail@mlesniak.com)
  */
+@Runner(configClass = Configuration.class, appName = "sonar-report")
 public class Main {
     private static Logger LOG = LoggerFactory.getLogger(Main.class);;
 
@@ -22,8 +24,7 @@ public class Main {
     }
 
     private void run(String[] args) throws Exception {
-        // TODO ML Get this over annotations of Main.
-        Configuration config = ConfigurationTool.parse(Configuration.class, "sonar-report", args);
+        Configuration config = ConfigurationTool.parse(args);
 
         // Testing.
         LOG.info("Starting sonar reporting.");
