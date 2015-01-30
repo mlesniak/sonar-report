@@ -29,7 +29,7 @@ public class SonarConnection {
     private static Logger LOG = LoggerFactory.getLogger(SonarConnection.class);
     private static String GET_ISSUE_SEARCH = "/api/issues/search";
     private static String GET_AUTHORIZE_VALIDATE = "/api/authentication/validate";
-    private Configuration config;
+    private SonarReportConfiguration config;
     private Gson gson = new Gson();
     private final CloseableHttpClient httpclient;
 
@@ -121,7 +121,7 @@ public class SonarConnection {
 
     public SonarConnection() {
         httpclient = HttpClients.createDefault();
-        config = Configuration.get();
+        config = SonarReportConfiguration.get();
     }
 
     public void login() {
@@ -163,7 +163,7 @@ public class SonarConnection {
             Wrapper removeIt = new Wrapper();
             // Remember if the current item should be removed:
             BeanUtils.forEachField(issue, field -> {
-                String filterValue = Configuration.get().get(field.getName());
+                String filterValue = SonarReportConfiguration.get().get(field.getName());
                 if (filterValue == null) {
                     return;
                 }
@@ -180,7 +180,7 @@ public class SonarConnection {
 
     private String getSonarResponse(String suffix) {
         try {
-            HttpGet httpGet = new HttpGet(Configuration.get().getServer() + suffix);
+            HttpGet httpGet = new HttpGet(SonarReportConfiguration.get().getServer() + suffix);
             UsernamePasswordCredentials creds = new UsernamePasswordCredentials(config.getUser(), config.getPassword());
             Header header = new BasicScheme().authenticate(creds, httpGet, new HttpClientContext());
             httpGet.addHeader(header);

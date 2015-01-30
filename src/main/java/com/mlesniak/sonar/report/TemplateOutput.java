@@ -18,12 +18,12 @@ import java.util.List;
 public class TemplateOutput {
     private static Logger LOG = LoggerFactory.getLogger(TemplateOutput.class);
     private TemplateEngine templateEngine;
-    private final Configuration config;
+    private final SonarReportConfiguration config;
     private String templateFileName;
 
 
     public TemplateOutput() {
-        config = Configuration.get();
+        config = SonarReportConfiguration.get();
 
         ITemplateResolver templateResolver = determineTemplateResolver();
         templateEngine = new TemplateEngine();

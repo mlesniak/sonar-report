@@ -10,8 +10,8 @@ import java.util.Map;
  *
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
-public class Configuration {
-    private transient static Configuration INSTANCE;
+public class SonarReportConfiguration {
+    private transient static SonarReportConfiguration INSTANCE;
     private transient Map<String, String> nonFields = new HashMap<>();
 
     private String user;
@@ -43,7 +43,7 @@ public class Configuration {
         return nonFields.get(field);
     }
 
-    public static Configuration get() {
+    public static SonarReportConfiguration get() {
         return INSTANCE;
     }
 

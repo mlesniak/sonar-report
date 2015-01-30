@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Michael Lesniak (mail@mlesniak.com)
  */
-@Runner(configClass = Configuration.class, appName = "sonar-report")
+@Runner(configClass = SonarReportConfiguration.class, appName = "sonar-report")
 public class Main {
     private static Logger LOG = LoggerFactory.getLogger(Main.class);;
 
@@ -24,7 +24,7 @@ public class Main {
     }
 
     private void run(String[] args) throws Exception {
-        Configuration config = ConfigurationTool.parse(args);
+        SonarReportConfiguration config = ConfigurationTool.parse(args);
 
         // Testing.
         LOG.info("Starting sonar reporting.");

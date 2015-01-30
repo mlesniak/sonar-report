@@ -1,6 +1,6 @@
 package com.mlesniak.runner;
 
-import com.mlesniak.sonar.report.Configuration;
+import com.mlesniak.sonar.report.SonarReportConfiguration;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Runner {
-    Class<Configuration> configClass();
+    Class<SonarReportConfiguration> configClass();
 
     String appName();
 }
