@@ -94,7 +94,7 @@ public class ConfigurationTool {
     private static Properties loadProperties(String defaultFilename, String[] args) throws IOException {
         Properties props = new Properties();
 
-        String filename = defaultFilename;
+        String filename = defaultFilename + ".properties";
         if (args.length % 2 == 1) {
             filename = args[0];
         }

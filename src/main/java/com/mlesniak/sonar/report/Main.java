@@ -22,7 +22,7 @@ public class Main {
     }
 
     private void run(String[] args) throws Exception {
-        Configuration config = ConfigurationTool.parse(Configuration.class, "sonar-report.properties", args);
+        Configuration config = ConfigurationTool.parse(Configuration.class, "sonar-report", args);
         LOG.info("Starting sonar reporting.");
 
         SonarConnection sonar = new SonarConnection();
