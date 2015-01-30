@@ -2,6 +2,7 @@ package com.mlesniak.sonar.report;
 
 import com.google.gson.*;
 import com.mlesniak.runner.BeanUtils;
+import com.mlesniak.runner.RunnerConfiguration;
 import org.apache.http.Header;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -121,7 +122,7 @@ public class SonarConnection {
 
     public SonarConnection() {
         httpclient = HttpClients.createDefault();
-        config = SonarReportConfiguration.get();
+        config = (SonarReportConfiguration) SonarReportConfiguration.get();
     }
 
     public void login() {
@@ -180,7 +181,8 @@ public class SonarConnection {
 
     private String getSonarResponse(String suffix) {
         try {
-            HttpGet httpGet = new HttpGet(SonarReportConfiguration.get().getServer() + suffix);
+            String server = ((SonarReportConfiguration) (RunnerConfiguration.get())).getServer();
+            HttpGet httpGet = new HttpGet(server + suffix);
             UsernamePasswordCredentials creds = new UsernamePasswordCredentials(config.getUser(), config.getPassword());
             Header header = new BasicScheme().authenticate(creds, httpGet, new HttpClientContext());
             httpGet.addHeader(header);

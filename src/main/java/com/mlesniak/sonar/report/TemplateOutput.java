@@ -23,7 +23,7 @@ public class TemplateOutput {
 
 
     public TemplateOutput() {
-        config = SonarReportConfiguration.get();
+        config = (SonarReportConfiguration) SonarReportConfiguration.get();
 
         ITemplateResolver templateResolver = determineTemplateResolver();
         templateEngine = new TemplateEngine();

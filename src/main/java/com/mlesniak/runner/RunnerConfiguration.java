@@ -1,7 +1,5 @@
 package com.mlesniak.runner;
 
-import com.mlesniak.sonar.report.SonarReportConfiguration;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,10 +7,10 @@ import java.util.Map;
  * @author Michael Lesniak (mlesniak@micromata.de)
  */
 public class RunnerConfiguration {
-    private transient static SonarReportConfiguration INSTANCE;
+    private transient static RunnerConfiguration INSTANCE;
     protected transient Map<String, String> nonFields = new HashMap<>();
 
-    public static SonarReportConfiguration get() {
+    public static RunnerConfiguration get() {
         return INSTANCE;
     }
 
