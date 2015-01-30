@@ -27,21 +27,13 @@ public class BeanUtils {
         }
     }
 
-    public static void setField(Object instance, String name, Object value) {
+    public static void setField(Object instance, String name, Object value) throws IllegalAccessException, NoSuchFieldException {
         Field field = null;
-        try {
-            field = instance.getClass().getDeclaredField(name);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-            return;
-        }
+        // Will work for the simple scenarios targeted by this library.
+        field = instance.getClass().getSuperclass().getDeclaredField(name);
         boolean accStatus = field.isAccessible();
         field.setAccessible(true);
-        try {
-            field.set(instance, value);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        field.set(instance, value);
         field.setAccessible(accStatus);
     }
 

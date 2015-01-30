@@ -24,11 +24,10 @@ public class Main {
     }
 
     private void run(String[] args) throws Exception {
-        SonarReportConfiguration config = ConfigurationTool.parse(args);
+        SonarReportConfiguration config = (SonarReportConfiguration) ConfigurationTool.parse(args);
 
         // Testing.
         LOG.info("Starting sonar reporting.");
-        System.exit(1);
 
         SonarConnection sonar = new SonarConnection();
         sonar.login();

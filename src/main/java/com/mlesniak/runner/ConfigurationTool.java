@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import com.mlesniak.sonar.report.SonarReportConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,16 +22,16 @@ import java.util.*;
 public class ConfigurationTool {
     private static Logger LOG = LoggerFactory.getLogger(ConfigurationTool.class);
     private static String appName;
-    private static Class<SonarReportConfiguration> bean;
+    private static Class<? extends RunnerConfiguration> bean;
 
-    public static SonarReportConfiguration parse(String[] args) {
+    public static RunnerConfiguration parse(String[] args) {
         try {
             initializeInstanceVariablesFromAnnotations();
             initializeLogging(appName);
-            SonarReportConfiguration instance = bean.newInstance();
+            RunnerConfiguration instance = bean.newInstance();
             Properties props = loadProperties(appName, args);
             Map<String, String> argMap = parseArgs(args);
-            SonarReportConfiguration config = parseToInstance(instance, props, argMap);
+            RunnerConfiguration config = parseToInstance(instance, props, argMap);
             addNonFields(instance, props, argMap);
             BeanUtils.setField(config, "INSTANCE", config);
             handleLogLevel(config);
@@ -77,7 +76,7 @@ public class ConfigurationTool {
         jc.doConfigure(stream);
     }
 
-    private static <T extends SonarReportConfiguration> void handleLogLevel(T config) {
+    private static <T extends RunnerConfiguration> void handleLogLevel(T config) {
         if (config.get("logLevel") != null) {
             // Think about a good generalization for com.mlesniak.
             ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.mlesniak");
@@ -89,7 +88,7 @@ public class ConfigurationTool {
     /**
      * Add property and command line fields which are not set as fields.
      */
-    private static <T extends SonarReportConfiguration> void addNonFields(T instance, Properties props, Map<String, String> argMap) {
+    private static <T extends RunnerConfiguration> void addNonFields(T instance, Properties props, Map<String, String> argMap) {
         Set<String> fieldNames = new HashSet<String>();
         for (Field field : instance.getClass().getDeclaredFields()) {
             fieldNames.add(field.getName());
