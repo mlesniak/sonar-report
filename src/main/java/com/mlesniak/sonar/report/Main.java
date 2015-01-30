@@ -24,9 +24,6 @@ public class Main {
     private void run(String[] args) throws Exception {
         Configuration config = ConfigurationTool.parse(Configuration.class, "sonar-report.properties", args);
         LOG.info("Starting sonar reporting.");
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Configuration:\n{}", config.toString());
-        }
 
         SonarConnection sonar = new SonarConnection();
         sonar.login();

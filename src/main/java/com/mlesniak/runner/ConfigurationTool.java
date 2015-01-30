@@ -28,6 +28,9 @@ public class ConfigurationTool {
             addNonFields(instance, props, argMap);
             BeanUtils.setField(config, "INSTANCE", config);
             handleLogLevel(config);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Configuration:\n{}", config.toString());
+            }
             return config;
         } catch (Exception e) {
             LOG.error("Error while generating configuration: {}", e.getMessage());
